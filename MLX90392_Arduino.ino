@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
+ *
+ * Rev2.0: RequestFrom return can be used to check for Nack.
  */
 
 
@@ -52,7 +54,7 @@ void loop()
       Wire.beginTransmission(0x0C);
       Wire.write(Register);
       Nack = Wire.endTransmission(false);
-      Wire.requestFrom(0x0C, Nbytes, true);
+      Nack = Nack + (Nbytes - Wire.requestFrom(0x0C, Nbytes, true));
       Serial.print(Nack);
       Serial.print(";");
       while (Nbytes > 0) {
@@ -70,8 +72,7 @@ void loop()
       if (Nbytes == 0) {
         Nbytes = 16;
       }
-      Wire.requestFrom(0x0C, Nbytes, true);
-      Nack = 0; // No possibility with Arduino to check on Nack with the requestFrom function...
+      Nack = (Nbytes - Wire.requestFrom(0x0C, Nbytes, true));
       Serial.print(Nack);
       Serial.print(";");
       while (Nbytes > 0) {
